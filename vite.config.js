@@ -12,8 +12,8 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'UJJAWAL APP',
-        short_name: 'UJJAWAL',
+        name: 'श्री बजरंग युवा गणेश उत्सव समिति',
+        short_name: 'Ganesh Samiti',
         description: 'Ganesh Samiti Finance Application',
         theme_color: '#16A34A',
         background_color: '#FFFFFF',

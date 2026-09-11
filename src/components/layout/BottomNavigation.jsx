@@ -1,15 +1,15 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Users, ArrowDownLeft, ArrowUpRight, FolderOpen } from 'lucide-react';
+import { Home, User, IndianRupee, BarChart2, Settings } from 'lucide-react';
 
 export default function BottomNavigation() {
   const navItems = [
     { to: "/dashboard", label: "होम", icon: Home },
-    { to: "/income", label: "जमा", icon: ArrowDownLeft },
-    { to: "/expense", label: "खर्च", icon: ArrowUpRight },
-    { to: "/members", label: "सदस्य", icon: Users },
-    { to: "/reports", label: "रिपोर्ट", icon: FolderOpen }
+    { to: "/members", label: "सदस्य", icon: User },
+    { to: "/transaction", label: "लेन-देन", icon: IndianRupee },
+    { to: "/reports", label: "रिपोर्ट", icon: BarChart2 },
+    { to: "/settings", label: "सेटिंग्स", icon: Settings }
   ];
 
   return (
