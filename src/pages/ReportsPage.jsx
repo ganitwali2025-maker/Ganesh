@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Folder, FileSpreadsheet, Search, RefreshCw, ExternalLink, Calendar, User, IndianRupee, Tag } from 'lucide-react';
+import { Folder, FileSpreadsheet, Search, Calendar, User } from 'lucide-react';
 import { getData } from '../utils/storage';
 import { formatINR } from '../utils/formatters';
 
@@ -20,12 +20,19 @@ export default function ReportsPage() {
     setExpenseData(getData('expenses', []));
   }, []);
 
+  useEffect(() => {
+    if (location.state?.category) {
+      setActiveTab(location.state.category);
+    }
+  }, [location.state]);
+
   // Filter based on search query
   const filterList = (list) => {
     if (!searchQuery.trim()) return list;
     const q = searchQuery.toLowerCase();
     return list.filter(item => 
       (item.memberName && item.memberName.toLowerCase().includes(q)) ||
+      (item.name && item.name.toLowerCase().includes(q)) ||
       (item.months && item.months.toLowerCase().includes(q)) ||
       (item.jamaCategory && item.jamaCategory.toLowerCase().includes(q)) ||
       (item.date && item.date.includes(q))
@@ -45,9 +52,12 @@ export default function ReportsPage() {
     <div className="page-container">
       <div className="page-header" style={{ marginBottom: '1rem' }}>
         <h2 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <FileSpreadsheet color="#6D28D9" size={24} /> रिपोर्ट्स & शीट्स डेटा
+          <FileSpreadsheet color="#6D28D9" size={24} /> 
+          {activeTab === 'monthly' ? 'मासिक जमा शीट्स रिकॉर्ड्स' : activeTab === 'chanda' ? 'चंदा & योगदान शीट्स रिकॉर्ड्स' : 'खर्च शीट्स रिकॉर्ड्स'}
         </h2>
-        <p className="page-subtitle">Google Sheets एवं समिति के रिकॉर्ड्स की लाइव तालिका</p>
+        <p className="page-subtitle">
+          {activeTab === 'monthly' ? 'केवल मासिक संग्रह का डेटा शीट्स तालिका' : activeTab === 'chanda' ? 'केवल चंदा एवं योगदान का डेटा शीट्स तालिका' : 'केवल खर्चों का डेटा शीट्स तालिका'}
+        </p>
       </div>
 
       {/* Tab Selectors */}
@@ -150,14 +160,14 @@ export default function ReportsPage() {
         <div style={{ padding: '0.75rem 1rem', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <FileSpreadsheet size={16} color="#16A34A" /> 
-            {activeTab === 'monthly' ? 'मासिक जमा शीट्स रिकॉर्ड्स' : activeTab === 'chanda' ? 'चंदा & योगदान शीट्स रिकॉर्ड्स' : 'खर्च शीट्स तालिका'}
+            {activeTab === 'monthly' ? 'मासिक जमा गूगल शीट डेटा' : activeTab === 'chanda' ? 'चंदा & योगदान गूगल शीट डेटा' : 'खर्च विवरण गूगल शीट डेटा'}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B' }}>कुल: {currentList.length} प्रविष्टियां</div>
         </div>
 
         {currentList.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: '#64748B', fontSize: '0.85rem' }}>
-            कोई रिकॉर्ड उपलब्ध नहीं है। फॉर्म भरें और प्रविष्टि जोड़ें!
+            इस श्रेणी में अभी कोई प्रविष्टि नहीं है।
           </div>
         ) : (
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>

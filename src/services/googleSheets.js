@@ -16,65 +16,58 @@ export const fetchGoogleSheetData = async (sheetName) => {
 
 export const sendToGoogleSheet = async (data) => {
   try {
-    // Construct exhaustive key-value mapping to match ANY Google Sheet column header format
-    const comprehensivePayload = {
-      // 1. Raw / CamelCase
-      date: data.date || '',
-      months: data.months || '',
-      memberName: data.memberName || '',
-      designation: data.designation || '',
-      jamaCategory: data.jamaCategory || '',
-      paymentMode: data.paymentMode || '',
-      amount: data.amount || 0,
-      paidAmount: data.paidAmount || 0,
-      creditAmount: data.creditAmount || 0,
-      remark: data.remark || '',
-
-      // 2. English Column Titles
+    // Both Title Case and camelCase to match any Apps Script parser
+    const payload = {
+      // Title Case keys expected by Google Apps Script
       "Date": data.date || '',
-      "Month": data.months || '',
-      "Months": data.months || '',
-      "Name": data.memberName || '',
-      "Member Name": data.memberName || '',
+      "Month": data.months || data.month || '',
+      "Months": data.months || data.month || '',
+      "Member Name": data.memberName || data.name || '',
+      "Name": data.memberName || data.name || '',
       "Designation": data.designation || '',
-      "Category": data.jamaCategory || '',
-      "Jama Category": data.jamaCategory || '',
+      "Jama Category": data.jamaCategory || data.category || '',
+      "Category": data.jamaCategory || data.category || '',
       "Payment Mode": data.paymentMode || '',
-      "Total Amount": data.amount || 0,
-      "Paid Amount": data.paidAmount || 0,
-      "Credit Amount": data.creditAmount || 0,
+      "Total Amount": parseFloat(data.amount) || 0,
+      "Paid Amount": parseFloat(data.paidAmount) || 0,
+      "Credit Amount": parseFloat(data.creditAmount) || 0,
       "Remark": data.remark || '',
 
-      // 3. Hindi Column Titles
+      // camelCase keys
+      date: data.date || '',
+      months: data.months || data.month || '',
+      memberName: data.memberName || data.name || '',
+      designation: data.designation || '',
+      jamaCategory: data.jamaCategory || data.category || '',
+      paymentMode: data.paymentMode || '',
+      amount: parseFloat(data.amount) || 0,
+      paidAmount: parseFloat(data.paidAmount) || 0,
+      creditAmount: parseFloat(data.creditAmount) || 0,
+      remark: data.remark || '',
+
+      // Hindi keys
       "दिनांक": data.date || '',
-      "महीना": data.months || '',
-      "सदस्य का नाम": data.memberName || '',
-      "नाम": data.memberName || '',
+      "महीना": data.months || data.month || '',
+      "सदस्य का नाम": data.memberName || data.name || '',
       "पद": data.designation || '',
-      "जमा श्रेणी": data.jamaCategory || '',
-      "श्रेणी": data.jamaCategory || '',
-      "भुगतान का प्रकार": data.paymentMode,
-      "कुल राशि": data.amount || 0,
-      "जमा राशि": data.paidAmount || 0,
-      "उधारी राशि": data.creditAmount || 0,
+      "जमा श्रेणी": data.jamaCategory || data.category || '',
+      "भुगतान का प्रकार": data.paymentMode || '',
+      "कुल राशि": parseFloat(data.amount) || 0,
+      "जमा राशि": parseFloat(data.paidAmount) || 0,
+      "उधारी राशि": parseFloat(data.creditAmount) || 0,
       "टिप्पणी": data.remark || ''
     };
-
-    // Send using URLSearchParams for form-based Apps Script or json body text
-    const formBody = new URLSearchParams();
-    Object.keys(comprehensivePayload).forEach(key => {
-      formBody.append(key, comprehensivePayload[key]);
-    });
 
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'text/plain',
       },
-      body: formBody.toString(),
+      body: JSON.stringify(payload),
     });
 
+    // In no-cors mode, reaching here means HTTP request was successfully dispatched to Apps Script
     return { status: 'success' };
   } catch (error) {
     console.error(`Error sending to Google Sheets:`, error);
