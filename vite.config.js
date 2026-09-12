@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'श्री बजरंग युवा गणेश उत्सव समिति',
         short_name: 'Ganesh Samiti',
         description: 'Ganesh Samiti Finance Application',
-        theme_color: '#16A34A',
+        theme_color: '#7C3AED',
         background_color: '#FFFFFF',
         display: 'standalone',
         orientation: 'portrait',

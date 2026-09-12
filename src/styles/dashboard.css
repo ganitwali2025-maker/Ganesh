@@ -118,7 +118,7 @@
 .pb-label {
   color: #4B5563;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.02em;
 }
 .pb-amount-wrapper {
@@ -128,7 +128,7 @@
 .pb-amount {
   color: #1F2937;
   font-size: 2.2rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
@@ -174,7 +174,7 @@
 }
 .pb-side-amount {
   font-size: 1.1rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 .pb-side-amount.green { color: #16A34A; }
 .pb-side-amount.red { color: #DC2626; }
@@ -321,15 +321,15 @@
 .bg-blue-light { background: #E0E7FF; }
 
 .section-title.text-xl {
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 600;
   color: #0F172A;
   margin-bottom: 0.1rem;
 }
 .section-subtitle {
   font-size: 0.75rem;
   color: #64748B;
-  font-weight: 500;
+  font-weight: 400;
 }
 .btn-pill {
   background: #F3E8FF;
@@ -337,7 +337,7 @@
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
   border: none;
   display: flex;
   align-items: center;
@@ -356,13 +356,13 @@
 .bg-indigo-soft { background: #E2E0FF; }
 
 .action-icon-bg {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 18px;
 }
 .action-item span {
-  font-size: 0.85rem;
-  font-weight: 800;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: #1E293B;
   text-align: center;
   position: relative;
@@ -413,15 +413,15 @@
   flex-direction: column;
 }
 .r-title {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #0F172A;
   margin-bottom: 0.25rem;
 }
 .r-subtitle {
   font-size: 0.75rem;
-  color: #475569;
-  font-weight: 600;
+  color: #64748B;
+  font-weight: 400;
   display: flex;
   align-items: center;
   gap: 0.3rem;
