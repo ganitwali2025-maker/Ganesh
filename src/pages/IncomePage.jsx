@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, User, Briefcase, FileText, IndianRupee, CreditCard, Save, CheckCircle, AlertCircle } from 'lucide-react';
 import { sendToGoogleSheet } from '../services/googleSheets';
+import { getData, saveData } from '../utils/storage';
 
 export default function IncomePage() {
   const navigate = useNavigate();
@@ -39,17 +40,39 @@ export default function IncomePage() {
     setLoading(true);
     setStatus({ type: '', message: '' });
 
-    // Format data to match Google Sheets expectations if needed
-    const dataToSubmit = {
+    const newRecord = {
       ...formData,
-      // Google Sheets often expects DD/MM/YYYY or MM/DD/YYYY depending on locale
-      // This sends ISO YYYY-MM-DD which is usually universally understood
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      amount: parseFloat(formData.amount) || 0,
+      paidAmount: parseFloat(formData.paidAmount) || 0,
+      creditAmount: parseFloat(formData.creditAmount) || 0,
     };
 
-    const response = await sendToGoogleSheet(dataToSubmit);
+    // Save to LocalStorage according to Category (Monthly Jama vs Chanda/Yogdan)
+    if (formData.jamaCategory === 'Monthly Jama') {
+      const existingIncome = getData('income', []);
+      saveData('income', [newRecord, ...existingIncome]);
+    } else {
+      const existingChanda = getData('chanda', []);
+      saveData('chanda', [newRecord, ...existingChanda]);
+    }
+
+    // Save credit record if there is remaining credit
+    if (newRecord.creditAmount > 0) {
+      const existingCredits = getData('credits', []);
+      saveData('credits', [newRecord, ...existingCredits]);
+    }
+
+    // Also add to transactions list
+    const existingTx = getData('transactions', []);
+    saveData('transactions', [newRecord, ...existingTx]);
+
+    // Send to Google Sheets
+    const response = await sendToGoogleSheet(newRecord);
 
     if (response && response.status === 'success') {
-      setStatus({ type: 'success', message: 'Data saved successfully!' });
+      setStatus({ type: 'success', message: 'डाटा Google Sheet और संबंधित फोल्डर में सफलतापूर्वक सेव हो गया!' });
       // Reset form but keep date as today
       setFormData({
         date: new Date().toISOString().split('T')[0],
@@ -64,10 +87,9 @@ export default function IncomePage() {
         remark: ''
       });
       
-      // Clear status after 3 seconds
-      setTimeout(() => setStatus({ type: '', message: '' }), 3000);
+      setTimeout(() => setStatus({ type: '', message: '' }), 4000);
     } else {
-      setStatus({ type: 'error', message: response?.message || 'Failed to save data. Please try again.' });
+      setStatus({ type: 'error', message: response?.message || 'गूगल शीट में सेव करने में त्रुटि हुई। कृपया पुन: प्रयास करें।' });
     }
     
     setLoading(false);

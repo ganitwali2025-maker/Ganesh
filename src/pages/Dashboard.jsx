@@ -112,7 +112,7 @@ export default function Dashboard() {
           <button className="view-all-btn btn-pill" onClick={() => navigate('/reports')}>सभी देखें <ChevronRight size={16}/></button>
         </div>
         <div className="reports-grid">
-          <div className="report-card theme-blue">
+          <div className="report-card theme-blue" onClick={() => navigate('/members')}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>
@@ -124,7 +124,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="report-card theme-green">
+          <div className="report-card theme-green" onClick={() => navigate('/reports', { state: { category: 'chanda' } })}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>
@@ -136,7 +136,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="report-card theme-orange">
+          <div className="report-card theme-orange" onClick={() => navigate('/reports', { state: { category: 'expenses' } })}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>
@@ -148,7 +148,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="report-card theme-purple">
+          <div className="report-card theme-purple" onClick={() => navigate('/reports', { state: { category: 'monthly' } })}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>

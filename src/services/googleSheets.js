@@ -1,5 +1,5 @@
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5g03J5hTS4Lnyh89L9UWRkx9xLqq2m0xEWn2PEZJkHSpzB9tyBOAew7uIGaf280pdng/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyx40JW4eUQ2rnZyBIQhImNWUype_IYsy8nfLo8xfQx4V400Qnf1-GVmmV_wuyhaQr3cg/exec';
 
 export const fetchGoogleSheetData = async (sheetName) => {
   console.log(`Fetching from Google Sheets: ${sheetName}... (Not implemented yet)`);
