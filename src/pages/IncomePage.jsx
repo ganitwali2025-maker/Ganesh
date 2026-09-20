@@ -103,7 +103,7 @@ export default function IncomePage() {
   };
 
   return (
-    <div className="page-container" style={{ background: '#F8FAFC', paddingBottom: '6rem' }}>
+    <div className="page-container" style={{ background: 'white', padding: '1rem', paddingBottom: '6rem', minHeight: '100vh' }}>
       
       {statusMsg.message && (
         <div className={`status-alert ${statusMsg.type}`} style={{ marginBottom: '1rem' }}>
@@ -112,7 +112,7 @@ export default function IncomePage() {
         </div>
       )}
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+      <div>
         
         {/* Header Banner */}
         <div style={{ background: '#F3E8FF', borderRadius: '8px', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>

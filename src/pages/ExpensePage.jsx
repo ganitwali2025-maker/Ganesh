@@ -97,7 +97,7 @@ export default function ExpensePage() {
   };
 
   return (
-    <div className="page-container" style={{ background: '#F8FAFC' }}>
+    <div className="page-container" style={{ background: 'white', padding: '1rem', paddingBottom: '6rem', minHeight: '100vh' }}>
       
       {statusMsg.message && (
         <div className={`status-alert ${statusMsg.type}`} style={{ marginBottom: '1rem' }}>
@@ -106,7 +106,7 @@ export default function ExpensePage() {
         </div>
       )}
 
-      <div style={{ background: 'white', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+      <div>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
           {/* Expense Name */}
