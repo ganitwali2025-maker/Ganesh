@@ -9,7 +9,6 @@ export default function ExpenseReportPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [lastSync, setLastSync] = useState(null);
-  const [filter, setFilter] = useState('all'); // all, paid, due
   const [error, setError] = useState(null);
 
   // Example mock data matching user request
@@ -58,17 +57,6 @@ export default function ExpenseReportPage() {
   const totalExpense = data.reduce((acc, curr) => acc + (curr.total || 0), 0);
   const totalPaid = data.reduce((acc, curr) => acc + (curr.paid || 0), 0);
   const totalDue = data.reduce((acc, curr) => acc + (curr.due || 0), 0);
-
-  // Filter Logic
-  const filteredData = data.filter(item => {
-    if (filter === 'paid') return item.due === 0;
-    if (filter === 'due') return item.due > 0;
-    return true; // 'all'
-  });
-
-  const countAll = data.length;
-  const countPaid = data.filter(i => i.due === 0).length;
-  const countDue = data.filter(i => i.due > 0).length;
 
   return (
     <div className="report-page-container" style={{ margin: '-1.25rem', background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -131,28 +119,6 @@ export default function ExpenseReportPage() {
 
         </div>
 
-        {/* Filter Tabs */}
-        <div style={{ display: 'flex', background: 'white', borderRadius: '8px', padding: '0.25rem', border: '1px solid #E2E8F0', marginBottom: '1rem' }}>
-          <button 
-            onClick={() => setFilter('all')}
-            style={{ flex: '1', padding: '0.6rem', border: 'none', background: filter === 'all' ? '#6D28D9' : 'transparent', color: filter === 'all' ? 'white' : '#64748B', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700, transition: 'all 0.2s', cursor: 'pointer' }}
-          >
-            सभी ({countAll})
-          </button>
-          <button 
-            onClick={() => setFilter('paid')}
-            style={{ flex: '1', padding: '0.6rem', border: 'none', background: filter === 'paid' ? '#6D28D9' : 'transparent', color: filter === 'paid' ? 'white' : '#64748B', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700, transition: 'all 0.2s', cursor: 'pointer' }}
-          >
-            भुगतान ({countPaid})
-          </button>
-          <button 
-            onClick={() => setFilter('due')}
-            style={{ flex: '1', padding: '0.6rem', border: 'none', background: filter === 'due' ? '#6D28D9' : 'transparent', color: filter === 'due' ? 'white' : '#64748B', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700, transition: 'all 0.2s', cursor: 'pointer' }}
-          >
-            बकाया ({countDue})
-          </button>
-        </div>
-
         {/* Data Table Wrapper */}
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
           <div style={{ overflowX: 'auto' }}>
@@ -178,14 +144,14 @@ export default function ExpenseReportPage() {
                       Google Sheets से डेटा सिंक हो रहा है...
                     </td>
                   </tr>
-                ) : filteredData.length === 0 ? (
+                ) : data.length === 0 ? (
                   <tr>
                     <td colSpan="9" style={{ padding: '2rem', textAlign: 'center', color: '#64748B', fontSize: '0.85rem' }}>
                       अभी कोई खर्च दर्ज नहीं है।
                     </td>
                   </tr>
                 ) : (
-                  filteredData.map((item, idx) => (
+                  data.map((item, idx) => (
                     <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? 'white' : '#FAFAFA' }}>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 700, color: '#1E293B' }}>{item.sNo}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.date}</td>
