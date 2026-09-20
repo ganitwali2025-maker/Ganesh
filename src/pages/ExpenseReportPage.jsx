@@ -102,22 +102,6 @@ export default function ExpenseReportPage() {
 
       <div style={{ padding: '1rem' }}>
         
-        {/* Sync Status Card */}
-        <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '8px', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <div style={{ background: '#16A34A', borderRadius: '4px', padding: '0.3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#166534', marginBottom: '0.1rem' }}>यह डेटा Google Sheets से सिंक किया गया है</div>
-              <div style={{ fontSize: '0.65rem', color: '#166534', opacity: 0.8 }}>अंतिम अपडेट: {lastSync || '...'}</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16A34A', fontSize: '0.75rem', fontWeight: 700 }}>
-            <CheckCircle size={14} /> सिंक सफल
-          </div>
-        </div>
-
         {/* Summary Cards */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
           
@@ -228,25 +212,6 @@ export default function ExpenseReportPage() {
               </tbody>
             </table>
           </div>
-        </div>
-
-        {/* Bottom Google Sheets Info Card */}
-        <div style={{ marginTop: '1.5rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <div style={{ background: '#16A34A', borderRadius: '8px', padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            </div>
-            <div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#6D28D9', marginBottom: '0.2rem' }}>खर्च विवरण</div>
-              <div style={{ fontSize: '0.7rem', color: '#475569', lineHeight: '1.4' }}>यह डेटा आपके Google Sheets से सिंक होकर यहाँ प्रदर्शित किया गया है।</div>
-            </div>
-          </div>
-          <button 
-            onClick={() => window.open('https://docs.google.com/spreadsheets', '_blank')}
-            style={{ background: '#F3E8FF', color: '#6D28D9', border: '1px solid #E5D5FF', padding: '0.75rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s' }}
-          >
-            <ExternalLink size={16} /> Google Sheets देखें
-          </button>
         </div>
 
       </div>

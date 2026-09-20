@@ -6,6 +6,11 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
+  
+  if (location.pathname === '/expense-report') {
+    return null;
+  }
+
   return (
     <div className="header">
 
