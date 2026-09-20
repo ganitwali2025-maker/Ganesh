@@ -12,6 +12,7 @@ import ExpensePage from './pages/ExpensePage';
 import CreditPage from './pages/CreditPage';
 import TransactionPage from './pages/TransactionPage';
 import ReportsPage from './pages/ReportsPage';
+import ExpenseReportPage from './pages/ExpenseReportPage';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/members" element={<MembersPage />} />
             <Route path="/income" element={<IncomePage />} />
             <Route path="/expense" element={<ExpensePage />} />
+            <Route path="/expense-report" element={<ExpenseReportPage />} />
             <Route path="/credit" element={<CreditPage />} />
             <Route path="/transaction" element={<TransactionPage />} />
             <Route path="/reports" element={<ReportsPage />} />

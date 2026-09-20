@@ -136,7 +136,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="report-card theme-orange" onClick={() => navigate('/reports', { state: { category: 'expenses' } })}>
+          <div className="report-card theme-orange" onClick={() => navigate('/expense-report')}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>
