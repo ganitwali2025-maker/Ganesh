@@ -10,42 +10,36 @@ export default function ExpenseReportPage() {
   const [data, setData] = useState([]);
   const [lastSync, setLastSync] = useState(null);
   const [error, setError] = useState(null);
-
-  // Example mock data matching user request
-  const mockData = [
-    { id: 1, sNo: 1, date: '28/07/2026', name: 'डीजे बुकिंग', desc: 'गणेश विसर्जन के लिए एडवांस + पेट्रोल 100', mode: 'नकद', total: 5100, paid: 5100, due: 0, status: 'भुगतान हो गया' },
-    { id: 2, sNo: 2, date: '05/08/2026', name: 'गणेश मूर्ति', desc: 'गणेश मूर्ति की अग्रिम राशि', mode: 'नकद', total: 1000, paid: 1000, due: 0, status: 'भुगतान हो गया' },
-    { id: 3, sNo: 3, date: '09/09/2026', name: 'केला, दूध एवं रस्सी', desc: '2 किलो केला ₹20, मूर्ति केला एवं दूध रस्सी 5 पीस', mode: 'नकद', total: 330, paid: 330, due: 0, status: 'भुगतान हो गया' },
-    { id: 4, sNo: 4, date: '11/09/2026', name: 'लाइट एवं कील', desc: 'लाइट एवं कील', mode: 'नकद', total: 110, paid: 110, due: 0, status: 'भुगतान हो गया' },
-    { id: 5, sNo: 5, date: '13/09/2026', name: '50W LED लाइट / सीलिंग पंडाल', desc: '15×15 साइज, लाइट रेट ₹650 + पंडाल ₹2,100', mode: 'UPI / नकद', total: 2750, paid: 2750, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 6, sNo: 6, date: '13/09/2026', name: 'त्रिपाल', desc: '2 पीस – 15×12 साइज ₹550 + 15×24 साइज ₹850', mode: 'UPI / नकद', total: 1400, paid: 1400, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 7, sNo: 7, date: '13/09/2026', name: 'ब्लूटूथ बॉक्स DJ Bass', desc: 'DJ बॉक्स का एडवांस', mode: 'UPI / नकद', total: 4500, paid: 4500, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 8, sNo: 8, date: '13/09/2026', name: 'इलेक्ट्रिकल सामान', desc: 'बोर्ड, टेस्टर, टेप आदि', mode: 'UPI / नकद', total: 680, paid: 680, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 9, sNo: 9, date: '14/09/2026', name: 'गणेश मूर्ति', desc: 'बाकी का पैसा', mode: 'UPI / नकद', total: 5250, paid: 5250, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 10, sNo: 10, date: '14/09/2026', name: 'गणेश पूजा', desc: 'फल, मिठाई, माला', mode: 'UPI / नकद', total: 420, paid: 420, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 11, sNo: 11, date: '14/09/2026', name: 'लाइट होल्डर और वायर', desc: 'लाइट होल्डर और वायर', mode: 'UPI / नकद', total: 48, paid: 48, due: 0, status: 'भुगतान पूर्ण' },
-    { id: 12, sNo: 12, date: '20/09/2026', name: 'प्रसाद', desc: 'सूजी, डालडा, शक्कर, काजू, किशमिश, लौंग, इलायची', mode: 'नकद', total: 275, paid: 275, due: 0, status: 'भुगतान पूर्ण' },
-  ];
-
-  const fetchGoogleSheetsData = () => {
+  const fetchGoogleSheetsData = async () => {
     setLoading(true);
     setError(null);
-    // Simulate network delay for sync
-    setTimeout(() => {
-      setData(mockData);
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec');
+      const result = await response.json();
       
-      const now = new Date();
-      const dateString = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
-      let hours = now.getHours();
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; 
-      const timeString = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
-      
-      setLastSync(`${dateString} ${timeString}`);
+      if (result.status === 'success') {
+        setData(result.data || []);
+        
+        const now = new Date();
+        const dateString = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; 
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+        
+        setLastSync(`${dateString} ${timeString}`);
+      } else {
+        setError(result.message || 'डेटा सिंक नहीं हो पाया');
+        console.error("Google Sheets Sync Error:", result);
+      }
+    } catch (err) {
+      setError('नेटवर्क एरर। डेटा सिंक नहीं हो पाया।');
+      console.error("Fetch Error:", err);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   useEffect(() => {
@@ -90,6 +84,12 @@ export default function ExpenseReportPage() {
 
       <div style={{ padding: '2rem 1rem 1rem 1rem' }}>
         
+        {error && (
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', padding: '0.75rem', marginBottom: '1.5rem', color: '#DC2626', fontSize: '0.8rem', fontWeight: 600, textAlign: 'center' }}>
+            {error}
+          </div>
+        )}
+
         {/* Summary Cards */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
           
