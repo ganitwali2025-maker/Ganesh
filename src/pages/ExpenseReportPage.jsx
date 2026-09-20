@@ -88,7 +88,7 @@ export default function ExpenseReportPage() {
         </button>
       </div>
 
-      <div style={{ padding: '1rem' }}>
+      <div style={{ padding: '2rem 1rem 1rem 1rem' }}>
         
         {/* Summary Cards */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
