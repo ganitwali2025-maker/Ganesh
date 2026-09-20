@@ -37,31 +37,40 @@ export default function ExpensePage() {
     setStatusMsg({ type: '', message: '' });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setStatusMsg({ type: '', message: '' });
     
     const newRecord = {
       ...formData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
       amount: parseFloat(formData.amount) || 0,
-      paidAmount: parseFloat(formData.amount) || 0,
-      creditAmount: 0,
     };
 
-    const existingExpenses = getData('expenses', []);
-    saveData('expenses', [newRecord, ...existingExpenses]);
-
-    // Also add to transactions list
-    const existingTx = getData('transactions', []);
-    saveData('transactions', [{...newRecord, type: 'Expense'}, ...existingTx]);
-
-    setStatusMsg({ type: 'success', message: 'खर्च सफलतापूर्वक सेव हो गया!' });
-    
-    setTimeout(() => {
-      handleReset();
-    }, 2000);
+    try {
+      // Using the current API endpoint
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(newRecord)
+      });
+      
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        setStatusMsg({ type: 'success', message: 'खर्च सफलतापूर्वक Google Sheets में सेव हो गया!' });
+        setTimeout(() => {
+          handleReset();
+        }, 2000);
+      } else {
+        setStatusMsg({ type: 'error', message: 'एरर: ' + result.message });
+      }
+    } catch (error) {
+      setStatusMsg({ type: 'error', message: 'डेटा सेव नहीं हो पाया। नेटवर्क चेक करें।' });
+      console.error(error);
+    }
     
     setLoading(false);
   };
