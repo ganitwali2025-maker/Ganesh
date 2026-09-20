@@ -1,56 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Calendar, User, Briefcase, FileText, IndianRupee, CreditCard, Save, CheckCircle, AlertCircle } from 'lucide-react';
-import { sendToGoogleSheet } from '../services/googleSheets';
-import { getData, saveData } from '../utils/storage';
+import React, { useState } from 'react';
+import { 
+  Calendar, Users, User, List, Wallet, 
+  IndianRupee, MessageSquare, Plus, RefreshCw, 
+  CheckCircle, Search, Coins, FileText
+} from 'lucide-react';
+import { saveData, getData } from '../utils/storage';
 
 export default function IncomePage() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', message: '' }); // type: 'success' | 'error'
+  const [statusMsg, setStatusMsg] = useState({ type: '', message: '' });
 
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     date: new Date().toISOString().split('T')[0],
-    months: '',
     memberName: '',
-    designation: '',
-    jamaCategory: 'Monthly Jama',
+    designation: 'सदस्य',
+    jamaCategory: 'मासिक जमा',
     paymentMode: 'Cash',
     amount: '',
-    paidAmount: '',
-    creditAmount: '',
     remark: ''
-  });
+  };
 
-  // Auto-calculate credit amount when amount or paid amount changes
-  useEffect(() => {
-    const amt = parseFloat(formData.amount) || 0;
-    const paid = parseFloat(formData.paidAmount) || 0;
-    const credit = amt - paid;
-    setFormData(prev => ({ ...prev, creditAmount: credit >= 0 ? credit : 0 }));
-  }, [formData.amount, formData.paidAmount]);
+  const [formData, setFormData] = useState(initialFormState);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handlePaymentModeSelect = (mode) => {
+    setFormData(prev => ({ ...prev, paymentMode: mode }));
+  };
+
+  const handleReset = () => {
+    setFormData(initialFormState);
+    setStatusMsg({ type: '', message: '' });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setStatus({ type: '', message: '' });
-
+    
     const newRecord = {
       ...formData,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       amount: parseFloat(formData.amount) || 0,
-      paidAmount: parseFloat(formData.paidAmount) || 0,
-      creditAmount: parseFloat(formData.creditAmount) || 0,
+      paidAmount: parseFloat(formData.amount) || 0, // Assuming full payment
+      creditAmount: 0,
+      jamaCategory: formData.jamaCategory === 'मासिक जमा' ? 'Monthly Jama' : formData.jamaCategory
     };
 
-    // Save to LocalStorage according to Category (Monthly Jama vs Chanda/Yogdan)
-    if (formData.jamaCategory === 'Monthly Jama') {
+    // Save to LocalStorage according to Category
+    if (newRecord.jamaCategory === 'Monthly Jama') {
       const existingIncome = getData('income', []);
       saveData('income', [newRecord, ...existingIncome]);
     } else {
@@ -58,149 +59,203 @@ export default function IncomePage() {
       saveData('chanda', [newRecord, ...existingChanda]);
     }
 
-    // Save credit record if there is remaining credit
-    if (newRecord.creditAmount > 0) {
-      const existingCredits = getData('credits', []);
-      saveData('credits', [newRecord, ...existingCredits]);
-    }
-
     // Also add to transactions list
     const existingTx = getData('transactions', []);
-    saveData('transactions', [newRecord, ...existingTx]);
+    saveData('transactions', [{...newRecord, type: 'Income'}, ...existingTx]);
 
-    // Send to Google Sheets
-    const response = await sendToGoogleSheet(newRecord);
-
-    if (response && response.status === 'success') {
-      setStatus({ type: 'success', message: 'डाटा Google Sheet और संबंधित फोल्डर में सफलतापूर्वक सेव हो गया!' });
-      // Reset form but keep date as today
-      setFormData({
-        date: new Date().toISOString().split('T')[0],
-        months: '',
-        memberName: '',
-        designation: '',
-        jamaCategory: 'Monthly Jama',
-        paymentMode: 'Cash',
-        amount: '',
-        paidAmount: '',
-        creditAmount: '',
-        remark: ''
-      });
-      
-      setTimeout(() => setStatus({ type: '', message: '' }), 4000);
-    } else {
-      setStatus({ type: 'error', message: response?.message || 'गूगल शीट में सेव करने में त्रुटि हुई। कृपया पुन: प्रयास करें।' });
-    }
+    setStatusMsg({ type: 'success', message: 'जमा सफलतापूर्वक सेव हो गया!' });
+    
+    setTimeout(() => {
+      handleReset();
+    }, 2000);
     
     setLoading(false);
   };
 
-  return (
-    <div className="page-container">
-      <div className="page-header">
-        <h2 className="page-title">जमा / चंदा (Income)</h2>
-        <p className="page-subtitle">Add new collection details</p>
-      </div>
+  const PaymentModeBtn = ({ mode, label, icon }) => {
+    const isActive = formData.paymentMode === mode;
+    return (
+      <button
+        type="button"
+        onClick={() => handlePaymentModeSelect(mode)}
+        style={{
+          flex: '1',
+          padding: '0.6rem 0.2rem',
+          borderRadius: '8px',
+          border: isActive ? '1px solid #6D28D9' : '1px solid #E2E8F0',
+          background: isActive ? '#6D28D9' : 'white',
+          color: isActive ? 'white' : '#475569',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.3rem',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {icon}
+        {label}
+      </button>
+    );
+  };
 
-      {status.message && (
-        <div className={`status-alert ${status.type}`}>
-          {status.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
-          <span>{status.message}</span>
+  return (
+    <div className="page-container" style={{ background: '#F8FAFC', paddingBottom: '6rem' }}>
+      
+      {statusMsg.message && (
+        <div className={`status-alert ${statusMsg.type}`} style={{ marginBottom: '1rem' }}>
+          <CheckCircle size={20} />
+          <span>{statusMsg.message}</span>
         </div>
       )}
 
-      <div className="form-card">
-        <form onSubmit={handleSubmit} className="entry-form">
+      <div style={{ background: 'white', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        
+        {/* Header Banner */}
+        <div style={{ background: '#F3E8FF', borderRadius: '8px', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#6D28D9', fontWeight: 800, fontSize: '1.1rem' }}>
+            <Coins size={22} /> जमा फ़ॉर्म
+          </div>
+          <div style={{ fontSize: '0.7rem', color: '#6D28D9', fontWeight: 500 }}>
+            सभी सदस्यों का मासिक जमा यहाँ दर्ज करें
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
-          <div className="form-group">
-            <label><Calendar size={16} /> Date (दिनांक)</label>
-            <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+          {/* Date */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <Calendar size={16} color="#6D28D9" /> दिनांक <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <input 
+              type="date" 
+              name="date" 
+              value={formData.date} 
+              onChange={handleChange}
+              required
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem' }}
+            />
           </div>
 
-          <div className="form-group">
-            <label><Calendar size={16} /> Months (महीना)</label>
-            <select name="months" value={formData.months} onChange={handleChange} required>
-              <option value="">Select Month</option>
-              <option value="January">January (जनवरी)</option>
-              <option value="February">February (फरवरी)</option>
-              <option value="March">March (मार्च)</option>
-              <option value="April">April (अप्रैल)</option>
-              <option value="May">May (मई)</option>
-              <option value="June">June (जून)</option>
-              <option value="July">July (जुलाई)</option>
-              <option value="August">August (अगस्त)</option>
-              <option value="September">September (सितंबर)</option>
-              <option value="October">October (अक्टूबर)</option>
-              <option value="November">November (नवंबर)</option>
-              <option value="December">December (दिसंबर)</option>
+          {/* Member Name */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <Users size={16} color="#6D28D9" /> सदस्य का नाम <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Search size={16} color="#94A3B8" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <input 
+                type="text" 
+                name="memberName" 
+                value={formData.memberName} 
+                onChange={handleChange}
+                placeholder="सदस्य का नाम खोजें..."
+                required
+                style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.2rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem' }}
+              />
+            </div>
+          </div>
+
+          {/* Designation */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <User size={16} color="#6D28D9" /> पद <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <input 
+              type="text" 
+              name="designation" 
+              value={formData.designation} 
+              onChange={handleChange}
+              readOnly
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem', background: '#F8FAFC', color: '#64748B' }}
+            />
+          </div>
+
+          {/* Jama Category */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <List size={16} color="#6D28D9" /> जमा का प्रकार <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <select 
+              name="jamaCategory" 
+              value={formData.jamaCategory} 
+              onChange={handleChange}
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem', background: 'white' }}
+            >
+              <option value="मासिक जमा">मासिक जमा</option>
+              <option value="चंदा">चंदा</option>
+              <option value="योगदान">योगदान</option>
             </select>
           </div>
 
-          <div className="form-group">
-            <label><User size={16} /> Member Name (सदस्य का नाम)</label>
-            <input type="text" name="memberName" value={formData.memberName} onChange={handleChange} placeholder="Enter name" required />
+          {/* Payment Mode (Segmented Control) */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <Wallet size={16} color="#6D28D9" /> भुगतान माध्यम <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <PaymentModeBtn mode="Cash" label="नकद" icon={<IndianRupee size={14} />} />
+              <PaymentModeBtn mode="UPI" label="UPI" icon={<span style={{ fontStyle: 'italic', fontWeight: 800 }}>//</span>} />
+              <PaymentModeBtn mode="UPI/Cash" label="UPI / नकद" icon={<span style={{ fontSize: '0.7rem' }}>QR</span>} />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label><Briefcase size={16} /> Designation (पद)</label>
-            <select name="designation" value={formData.designation} onChange={handleChange}>
-              <option value="">Select Designation</option>
-              <option value="President (अध्यक्ष)">President (अध्यक्ष)</option>
-              <option value="Vice President (उपाध्यक्ष)">Vice President (उपाध्यक्ष)</option>
-              <option value="Secretary (सचिव)">Secretary (सचिव)</option>
-              <option value="Treasurer (कोषाध्यक्ष)">Treasurer (कोषाध्यक्ष)</option>
-              <option value="Member (सदस्य)">Member (सदस्य)</option>
-              <option value="Other (अन्य)">Other (अन्य)</option>
-            </select>
+          {/* Amount */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <div style={{ background: '#6D28D9', borderRadius: '50%', padding: '2px', display: 'flex' }}><IndianRupee size={10} color="white" /></div> 
+              राशि (₹) <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <input 
+              type="number" 
+              name="amount" 
+              value={formData.amount} 
+              onChange={handleChange} 
+              required 
+              placeholder="0" 
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.9rem', outline: 'none' }} 
+            />
           </div>
 
-          <div className="form-group">
-            <label><FileText size={16} /> Jama Category (जमा श्रेणी)</label>
-            <select name="jamaCategory" value={formData.jamaCategory} onChange={handleChange} required>
-              <option value="Monthly Jama">Monthly Jama (मासिक जमा)</option>
-              <option value="Yogdan">Yogdan (योगदान)</option>
-              <option value="Chanda">Chanda (चंदा)</option>
-            </select>
+          {/* Remark */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <MessageSquare size={16} color="#6D28D9" /> Remark / टिप्पणी
+            </label>
+            <textarea 
+              name="remark" 
+              value={formData.remark} 
+              onChange={handleChange}
+              placeholder="किसी भी अतिरिक्त जानकारी के लिए लिखें..."
+              rows="3"
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem', resize: 'vertical' }}
+            />
           </div>
 
-          <div className="form-group">
-            <label><CreditCard size={16} /> Payment Mode (भुगतान का प्रकार)</label>
-            <select name="paymentMode" value={formData.paymentMode} onChange={handleChange} required>
-              <option value="Cash">Cash (नकद)</option>
-              <option value="Online/UPI">Online/UPI (ऑनलाइन)</option>
-              <option value="Bank Transfer">Bank Transfer (बैंक ट्रांसफर)</option>
-            </select>
-          </div>
 
-          <div className="form-group">
-            <label><IndianRupee size={16} /> Total Amount (कुल राशि)</label>
-            <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="0.00" required />
-          </div>
 
-          <div className="form-group">
-            <label><IndianRupee size={16} /> Paid Amount (जमा राशि)</label>
-            <input type="number" name="paidAmount" value={formData.paidAmount} onChange={handleChange} placeholder="0.00" required />
-          </div>
-
-          <div className="form-group">
-            <label><IndianRupee size={16} /> Credit Amount (उधारी राशि)</label>
-            <input type="number" name="creditAmount" value={formData.creditAmount} onChange={handleChange} placeholder="0.00" readOnly className="readonly-input" />
-          </div>
-
-          <div className="form-group full-width">
-            <label><FileText size={16} /> Remark (टिप्पणी)</label>
-            <textarea name="remark" value={formData.remark} onChange={handleChange} placeholder="Enter any details..." rows="3"></textarea>
-          </div>
-
-          <div className="form-actions full-width">
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? (
-                <span className="loading-spinner"></span>
-              ) : (
-                <><Save size={18} /> Save Record</>
-              )}
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <button 
+              type="submit" 
+              disabled={loading}
+              style={{ flex: '1', background: '#6D28D9', color: 'white', border: 'none', borderRadius: '8px', padding: '0.8rem', fontWeight: 700, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}
+            >
+              <Plus size={18} /> जमा जोड़ें
+            </button>
+            <button 
+              type="button"
+              onClick={handleReset}
+              style={{ flex: '1', background: '#F8FAFC', color: '#6D28D9', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '0.8rem', fontWeight: 700, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}
+            >
+              <RefreshCw size={18} /> रीसेट
             </button>
           </div>
+
         </form>
       </div>
     </div>
