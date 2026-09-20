@@ -71,7 +71,7 @@ export default function ExpenseReportPage() {
   const countDue = data.filter(i => i.due > 0).length;
 
   return (
-    <div className="report-page-container" style={{ background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>
+    <div className="report-page-container" style={{ margin: '-1.25rem', background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>
       
       {/* Top Header Row */}
       <div style={{ background: 'white', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50 }}>
