@@ -125,15 +125,15 @@ export default function ExpenseReportPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
               <thead>
                 <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '50px' }}>क्र.सं.</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '90px' }}>दिनांक</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '140px' }}>खर्च का नाम</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', minWidth: '200px' }}>विवरण</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '100px' }}>भुगतान माध्यम</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px' }}>कुल राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px' }}>भुगतान राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px' }}>बकाया राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '100px' }}>स्थिति</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '50px', whiteSpace: 'nowrap' }}>क्र.सं.</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '90px', whiteSpace: 'nowrap' }}>दिनांक</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '140px', whiteSpace: 'nowrap' }}>खर्च का नाम</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', minWidth: '200px', whiteSpace: 'nowrap' }}>विवरण</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '100px', whiteSpace: 'nowrap' }}>भुगतान माध्यम</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px', whiteSpace: 'nowrap' }}>कुल राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px', whiteSpace: 'nowrap' }}>भुगतान राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '80px', whiteSpace: 'nowrap' }}>बकाया राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#475569', width: '100px', whiteSpace: 'nowrap' }}>स्थिति</th>
                 </tr>
               </thead>
               <tbody>
@@ -155,7 +155,7 @@ export default function ExpenseReportPage() {
                     <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? 'white' : '#FAFAFA' }}>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 700, color: '#1E293B' }}>{item.sNo}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.date}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B' }}>{item.name}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>{item.name}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B', lineHeight: '1.4' }}>{item.desc}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.mode}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.total)}</td>
