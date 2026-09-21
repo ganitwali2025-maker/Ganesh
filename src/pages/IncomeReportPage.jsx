@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Folder, RefreshCw, CheckCircle, Wallet, CreditCard, Clock, ExternalLink } from 'lucide-react';
 import { formatINR, formatDate } from '../utils/formatters';
+import { getData, saveData } from '../utils/storage';
 
 export default function IncomeReportPage() {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(() => getData('cached_income_data', []));
   const [lastSync, setLastSync] = useState(null);
   const [error, setError] = useState(null);
   
@@ -21,6 +22,7 @@ export default function IncomeReportPage() {
       
       if (result.status === 'success') {
         setData(result.data || []);
+        saveData('cached_income_data', result.data || []);
         
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB'); // DD/MM/YYYY

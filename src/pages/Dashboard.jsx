@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wallet, ArrowUp, ArrowDown, ChevronRight, Sun, Users, Download, Upload, IndianRupee, BarChart2, Folder, FolderOpen, FileText, Zap } from 'lucide-react';
 import TransactionItem from '../components/ui/TransactionItem';
-import { getData } from '../utils/storage';
+import { getData, saveData } from '../utils/storage';
 import { calculateBalance, calculateTotalIncome, calculateTotalChanda, calculateTotalExpense, calculateTotalCredit } from '../utils/calculations';
 import { formatINR } from '../utils/formatters';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [totals, setTotals] = useState({ jama: 0, expense: 0, balance: 0, loading: true });
+  const [totals, setTotals] = useState(() => {
+    const cachedTotals = getData('dashboard_totals', { jama: 0, expense: 0, balance: 0 });
+    return { ...cachedTotals, loading: true };
+  });
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -38,6 +41,7 @@ export default function Dashboard() {
           balance: totalJama - totalExp,
           loading: false
         });
+        saveData('dashboard_totals', { jama: totalJama, expense: totalExp, balance: totalJama - totalExp });
       } catch (error) {
         console.error("Dashboard Fetch Error:", error);
         setTotals(prev => ({ ...prev, loading: false }));
