@@ -14,7 +14,7 @@ export default function ExpenseReportPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec');
       const result = await response.json();
       
       if (result.status === 'success') {

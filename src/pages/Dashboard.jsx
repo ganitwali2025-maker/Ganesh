@@ -8,20 +8,48 @@ import { formatINR } from '../utils/formatters';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [data, setData] = useState({ income: [], chanda: [], expenses: [], credits: [], transactions: [] });
+  const [totals, setTotals] = useState({ jama: 0, expense: 0, balance: 0, loading: true });
 
   useEffect(() => {
-    const income = getData('income');
-    const chanda = getData('chanda');
-    const expenses = getData('expenses');
-    const credits = getData('credits');
-    const transactions = getData('transactions');
-    setData({ income, chanda, expenses, credits, transactions });
+    const fetchDashboardData = async () => {
+      try {
+        const [resIncome, resExpense] = await Promise.all([
+          fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec?type=income'),
+          fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec')
+        ]);
+        
+        const jsonIncome = await resIncome.json();
+        const jsonExpense = await resExpense.json();
+        
+        let totalJama = 0;
+        let totalExp = 0;
+
+        if (jsonIncome.status === 'success' && jsonIncome.data) {
+          totalJama = jsonIncome.data.reduce((acc, curr) => acc + (parseFloat(curr.paidAmount) || 0), 0);
+        }
+
+        if (jsonExpense.status === 'success' && jsonExpense.data) {
+          totalExp = jsonExpense.data.reduce((acc, curr) => acc + (parseFloat(curr.total) || 0), 0);
+        }
+
+        setTotals({
+          jama: totalJama,
+          expense: totalExp,
+          balance: totalJama - totalExp,
+          loading: false
+        });
+      } catch (error) {
+        console.error("Dashboard Fetch Error:", error);
+        setTotals(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
-  const balance = calculateBalance(data.income, data.chanda, data.expenses);
-  const totalJama = calculateTotalIncome(data.income) + calculateTotalChanda(data.chanda);
-  const totalExpense = calculateTotalExpense(data.expenses);
+  const balance = totals.balance;
+  const totalJama = totals.jama;
+  const totalExpense = totals.expense;
 
   return (
     <div className="dashboard-page">
