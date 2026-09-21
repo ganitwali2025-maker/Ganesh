@@ -51,8 +51,14 @@ export default function IncomePage() {
     };
 
     try {
-      // Using the specific API endpoint for Income
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec', {
+      let apiUrl = 'https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec';
+      
+      // If it's a monthly deposit, send to the Monthly API
+      if (formData.jamaCategory === 'मासिक जमा' || formData.jamaCategory === 'Monthly Jama') {
+        apiUrl = 'https://script.google.com/macros/s/AKfycbz8y5ceWV1xH3gdqYMJVrGTLbaELrIgibwB5p_0hZZvdXm7FHi_N048hI6kVhpJUR4/exec';
+      }
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',

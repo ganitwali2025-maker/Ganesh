@@ -107,16 +107,6 @@ export default function Dashboard() {
 
       {/* Quick Actions Grid */}
       <div className="section-container">
-        <div className="section-header">
-          <div className="section-title-wrapper">
-            <div className="section-title-icon bg-purple-light"><Zap size={20} color="#6D28D9" /></div>
-            <div>
-              <div className="section-title text-xl">त्वरित कार्य</div>
-              <div className="section-subtitle">जल्दी से जरूरी काम करें</div>
-            </div>
-          </div>
-          <button className="view-all-btn btn-pill">सभी देखें <ChevronRight size={16}/></button>
-        </div>
         <div className="quick-action-grid">
           <div className="action-item" onClick={() => navigate('/income')}>
             <div className="action-icon-bg bg-purple-soft"><Download size={26} color="#6D28D9" strokeWidth={1.8} /></div>
@@ -143,16 +133,6 @@ export default function Dashboard() {
 
       {/* Reports & Files */}
       <div className="section-container">
-        <div className="section-header">
-          <div className="section-title-wrapper">
-            <div className="section-title-icon bg-blue-light"><Folder size={20} color="#0284C7" /></div>
-            <div>
-              <div className="section-title text-xl">रिपोर्ट्स & फाइलें</div>
-              <div className="section-subtitle">समिति की सभी जरूरी फाइलें और रिपोर्ट्स</div>
-            </div>
-          </div>
-          <button className="view-all-btn btn-pill" onClick={() => navigate('/reports')}>सभी देखें <ChevronRight size={16}/></button>
-        </div>
         <div className="reports-grid">
           <div className="report-card theme-blue" onClick={() => navigate('/members')}>
             <div className="report-card-top">

@@ -164,7 +164,7 @@ export default function IncomeReportPage() {
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.month}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>{item.memberName}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.designation}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B' }}>{item.category}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B' }}>{item.jamaCategory}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.paymentMode}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.amount)}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#16A34A', textAlign: 'right' }}>{formatINR(item.paid)}</td>
