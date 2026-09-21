@@ -16,16 +16,19 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [incomeRes, expenseRes] = await Promise.all([
+        const [incomeRes, expenseRes, monthlyRes] = await Promise.all([
           fetch('https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec?type=income'),
-          fetch('https://script.google.com/macros/s/AKfycbzgYUk1T-EmyCqND522vusf9vWoLRQktd6dya7IK7y33rN8t5nBvQJzjRcTWfo5y16v/exec?type=expense')
+          fetch('https://script.google.com/macros/s/AKfycbzgYUk1T-EmyCqND522vusf9vWoLRQktd6dya7IK7y33rN8t5nBvQJzjRcTWfo5y16v/exec?type=expense'),
+          fetch('https://script.google.com/macros/s/AKfycbz8y5ceWV1xH3gdqYMJVrGTLbaELrIgibwB5p_0hZZvdXm7FHi_N048hI6kVhpJUR4/exec')
         ]);
         
         const jsonIncome = await incomeRes.json();
         const jsonExpense = await expenseRes.json();
+        const jsonMonthly = await monthlyRes.json();
         
         let totalJama = 0;
         let totalExp = 0;
+        let totalMonthly = 0;
 
         if (jsonIncome.status === 'success' && jsonIncome.data) {
           totalJama = jsonIncome.data.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
@@ -34,14 +37,21 @@ export default function Dashboard() {
         if (jsonExpense.status === 'success' && jsonExpense.data) {
           totalExp = jsonExpense.data.reduce((acc, curr) => acc + parseAmount(curr.total), 0);
         }
+        
+        if (jsonMonthly.status === 'success' && jsonMonthly.data) {
+          totalMonthly = jsonMonthly.data.reduce((acc, curr) => acc + parseAmount(curr.amount), 0);
+        }
+
+        const combinedIncome = totalJama + totalMonthly;
+        const finalBalance = combinedIncome - totalExp;
 
         setTotals({
-          jama: totalJama,
+          jama: combinedIncome,
           expense: totalExp,
-          balance: totalJama - totalExp,
+          balance: finalBalance,
           loading: false
         });
-        saveData('dashboard_totals', { jama: totalJama, expense: totalExp, balance: totalJama - totalExp });
+        saveData('dashboard_totals', { jama: combinedIncome, expense: totalExp, balance: finalBalance });
       } catch (error) {
         console.error("Dashboard Fetch Error:", error);
         setTotals(prev => ({ ...prev, loading: false }));
@@ -76,7 +86,7 @@ export default function Dashboard() {
             <div className="pb-side-card income-card">
               <div className="pb-side-top-row">
                 <div className="pb-side-icon green-icon"><ArrowUp size={14} strokeWidth={2}/></div>
-                <div className="pb-side-label">आज (Income)</div>
+                <div className="pb-side-label">कुल जमा (Income)</div>
               </div>
               <div className="pb-side-amount-wrapper">
                 <div className="pb-side-amount green">{formatINR(totalJama)}</div>
