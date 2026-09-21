@@ -128,7 +128,6 @@ export default function MonthlyReportPage() {
                 <tr style={{ background: '#7C3AED', color: 'white', borderBottom: '1px solid #E2E8F0' }}>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '50px', whiteSpace: 'nowrap' }}>क्र.सं.</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '90px', whiteSpace: 'nowrap' }}>दिनांक</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>माह</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', minWidth: '150px', whiteSpace: 'nowrap' }}>सदस्य का नाम</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>पद</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>भुगतान माध्यम</th>
@@ -155,7 +154,6 @@ export default function MonthlyReportPage() {
                     <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? 'white' : '#FAFAFA' }}>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 700, color: '#1E293B' }}>{item.sNo}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{formatDate(item.date)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.month}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>{item.memberName}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.designation}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.paymentMode}</td>

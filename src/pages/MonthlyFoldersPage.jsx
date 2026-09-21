@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Folder, Calendar } from 'lucide-react';
 
 const months = [
-  { id: 'jan', name: 'जनवरी', eng: 'January' },
-  { id: 'feb', name: 'फरवरी', eng: 'February' },
-  { id: 'mar', name: 'मार्च', eng: 'March' },
-  { id: 'apr', name: 'अप्रैल', eng: 'April' },
-  { id: 'may', name: 'मई', eng: 'May' },
-  { id: 'jun', name: 'जून', eng: 'June' },
-  { id: 'jul', name: 'जुलाई', eng: 'July' },
-  { id: 'aug', name: 'अगस्त', eng: 'August' },
-  { id: 'sep', name: 'सितंबर', eng: 'September' },
-  { id: 'oct', name: 'अक्टूबर', eng: 'October' },
-  { id: 'nov', name: 'नवंबर', eng: 'November' },
-  { id: 'dec', name: 'दिसंबर', eng: 'December' }
+  { id: 'jan', name: 'जनवरी', eng: 'January', color: '#EF4444', bg: '#FEE2E2', iconBg: '#FEF2F2' },
+  { id: 'feb', name: 'फरवरी', eng: 'February', color: '#F97316', bg: '#FFEDD5', iconBg: '#FFF7ED' },
+  { id: 'mar', name: 'मार्च', eng: 'March', color: '#EAB308', bg: '#FEF9C3', iconBg: '#FEFCE8' },
+  { id: 'apr', name: 'अप्रैल', eng: 'April', color: '#22C55E', bg: '#DCFCE7', iconBg: '#F0FDF4' },
+  { id: 'may', name: 'मई', eng: 'May', color: '#14B8A6', bg: '#CCFBF1', iconBg: '#F0FDFA' },
+  { id: 'jun', name: 'जून', eng: 'June', color: '#06B6D4', bg: '#CFFAFE', iconBg: '#ECFEFF' },
+  { id: 'jul', name: 'जुलाई', eng: 'July', color: '#3B82F6', bg: '#DBEAFE', iconBg: '#EFF6FF' },
+  { id: 'aug', name: 'अगस्त', eng: 'August', color: '#6366F1', bg: '#E0E7FF', iconBg: '#EEF2FF' },
+  { id: 'sep', name: 'सितंबर', eng: 'September', color: '#8B5CF6', bg: '#EDE9FE', iconBg: '#F5F3FF' },
+  { id: 'oct', name: 'अक्टूबर', eng: 'October', color: '#D946EF', bg: '#FAE8FF', iconBg: '#FDF4FF' },
+  { id: 'nov', name: 'नवंबर', eng: 'November', color: '#F43F5E', bg: '#FFE4E6', iconBg: '#FFF1F2' },
+  { id: 'dec', name: 'दिसंबर', eng: 'December', color: '#64748B', bg: '#F1F5F9', iconBg: '#F8FAFC' }
 ];
 
 export default function MonthlyFoldersPage() {
@@ -67,8 +67,8 @@ export default function MonthlyFoldersPage() {
               }}
               className="month-folder-card"
             >
-              <div style={{ background: '#F5F3FF', padding: '0.75rem', borderRadius: '12px' }}>
-                <Folder size={28} color="#7C3AED" fill="#EDE9FE" />
+              <div style={{ background: month.iconBg, padding: '0.75rem', borderRadius: '12px' }}>
+                <Folder size={28} color={month.color} fill={month.bg} />
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1E293B' }}>{month.name}</div>
