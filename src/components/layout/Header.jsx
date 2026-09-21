@@ -7,7 +7,7 @@ export default function Header() {
   const navigate = useNavigate();
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
   
-  if (location.pathname === '/expense-report' || location.pathname === '/income-report' || location.pathname === '/monthly-report') {
+  if (location.pathname === '/expense-report' || location.pathname === '/income-report' || location.pathname.startsWith('/monthly-report')) {
     return null;
   }
 
