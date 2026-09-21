@@ -31,7 +31,8 @@ export default function Dashboard() {
         let totalMonthly = 0;
 
         if (jsonIncome.status === 'success' && jsonIncome.data) {
-          totalJama = jsonIncome.data.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
+          const validIncome = jsonIncome.data.filter(item => !['18', '19', '20'].includes(String(item.sNo)));
+          totalJama = validIncome.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
         }
 
         if (jsonExpense.status === 'success' && jsonExpense.data) {

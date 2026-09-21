@@ -21,8 +21,10 @@ export default function IncomeReportPage() {
       const result = await response.json();
       
       if (result.status === 'success') {
-        setData(result.data || []);
-        saveData('cached_income_data', result.data || []);
+        // Filter out bad test entries (18, 19, 20)
+        const filteredData = (result.data || []).filter(item => !['18', '19', '20'].includes(String(item.sNo)));
+        setData(filteredData);
+        saveData('cached_income_data', filteredData);
         
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
