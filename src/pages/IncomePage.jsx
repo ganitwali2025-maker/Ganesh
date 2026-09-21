@@ -12,6 +12,7 @@ export default function IncomePage() {
 
   const initialFormState = {
     date: new Date().toISOString().split('T')[0],
+    month: 'सितंबर',
     memberName: '',
     designation: 'सदस्य',
     jamaCategory: 'मासिक जमा',
@@ -36,38 +37,53 @@ export default function IncomePage() {
     setStatusMsg({ type: '', message: '' });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setStatusMsg({ type: '', message: '' });
     
     const newRecord = {
       ...formData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
       amount: parseFloat(formData.amount) || 0,
-      paidAmount: parseFloat(formData.amount) || 0, // Assuming full payment
+      paidAmount: parseFloat(formData.amount) || 0,
       creditAmount: 0,
-      jamaCategory: formData.jamaCategory === 'मासिक जमा' ? 'Monthly Jama' : formData.jamaCategory
+      type: 'Income'
     };
 
-    // Save to LocalStorage according to Category
-    if (newRecord.jamaCategory === 'Monthly Jama') {
-      const existingIncome = getData('income', []);
-      saveData('income', [newRecord, ...existingIncome]);
-    } else {
-      const existingChanda = getData('chanda', []);
-      saveData('chanda', [newRecord, ...existingChanda]);
+    try {
+      // Using the same API endpoint used in ExpensePage
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(newRecord)
+      });
+      
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        setStatusMsg({ type: 'success', message: 'जमा सफलतापर्वक Google Sheets में सेव हो गया!' });
+        
+        // Also save locally for quick dashboard view if needed
+        if (newRecord.jamaCategory === 'मासिक जमा' || newRecord.jamaCategory === 'Monthly Jama') {
+          const existingIncome = getData('income', []);
+          saveData('income', [newRecord, ...existingIncome]);
+        } else {
+          const existingChanda = getData('chanda', []);
+          saveData('chanda', [newRecord, ...existingChanda]);
+        }
+        
+        setTimeout(() => {
+          handleReset();
+        }, 2000);
+      } else {
+        setStatusMsg({ type: 'error', message: 'एरर: ' + result.message });
+      }
+    } catch (error) {
+      setStatusMsg({ type: 'error', message: 'डेटा सेव नहीं हो पाया। नेटवर्क चेक करें।' });
+      console.error(error);
     }
-
-    // Also add to transactions list
-    const existingTx = getData('transactions', []);
-    saveData('transactions', [{...newRecord, type: 'Income'}, ...existingTx]);
-
-    setStatusMsg({ type: 'success', message: 'जमा सफलतापूर्वक सेव हो गया!' });
-    
-    setTimeout(() => {
-      handleReset();
-    }, 2000);
     
     setLoading(false);
   };
@@ -139,6 +155,32 @@ export default function IncomePage() {
               required
               style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem' }}
             />
+          </div>
+
+          {/* Month */}
+          <div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 700, color: '#1E293B', marginBottom: '0.5rem' }}>
+              <Calendar size={16} color="#6D28D9" /> माह <span style={{ color: '#DC2626' }}>*</span>
+            </label>
+            <select 
+              name="month" 
+              value={formData.month} 
+              onChange={handleChange}
+              style={{ width: '100%', padding: '0.75rem', border: '1px solid #E2E8F0', borderRadius: '8px', outline: 'none', fontSize: '0.85rem', background: 'white' }}
+            >
+              <option value="जनवरी">जनवरी</option>
+              <option value="फरवरी">फरवरी</option>
+              <option value="मार्च">मार्च</option>
+              <option value="अप्रैल">अप्रैल</option>
+              <option value="मई">मई</option>
+              <option value="जून">जून</option>
+              <option value="जुलाई">जुलाई</option>
+              <option value="अगस्त">अगस्त</option>
+              <option value="सितंबर">सितंबर</option>
+              <option value="अक्टूबर">अक्टूबर</option>
+              <option value="नवंबर">नवंबर</option>
+              <option value="दिसंबर">दिसंबर</option>
+            </select>
           </div>
 
           {/* Member Name */}

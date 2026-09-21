@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Folder, RefreshCw, CheckCircle, Wallet, CreditCard, Clock, ExternalLink } from 'lucide-react';
 import { formatINR, formatDate } from '../utils/formatters';
 
-export default function ExpenseReportPage() {
+export default function IncomeReportPage() {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [lastSync, setLastSync] = useState(null);
   const [error, setError] = useState(null);
+  
   const fetchGoogleSheetsData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec');
+      // ?type=income pass karenge jisse Google Apps Script sirft Income ka data bheje
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec?type=income');
       const result = await response.json();
       
       if (result.status === 'success') {
@@ -48,9 +50,9 @@ export default function ExpenseReportPage() {
   }, []);
 
   // Calculate totals
-  const totalExpense = data.reduce((acc, curr) => acc + (curr.total || 0), 0);
-  const totalPaid = data.reduce((acc, curr) => acc + (curr.paid || 0), 0);
-  const totalDue = data.reduce((acc, curr) => acc + (curr.due || 0), 0);
+  const totalAmount = data.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+  const totalPaid = data.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0);
+  const totalDue = data.reduce((acc, curr) => acc + (curr.dueAmount || 0), 0);
 
   return (
     <div className="report-page-container" style={{ margin: '-1.25rem', background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -58,16 +60,16 @@ export default function ExpenseReportPage() {
       {/* Top Header Row */}
       <div style={{ background: 'white', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <button onClick={() => navigate(-1)} style={{ background: '#FFF7ED', border: 'none', padding: '0.5rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#EA580C', cursor: 'pointer' }}>
+          <button onClick={() => navigate(-1)} style={{ background: '#F0FDF4', border: 'none', padding: '0.5rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16A34A', cursor: 'pointer' }}>
             <ArrowLeft size={20} />
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ background: '#FFEDD5', padding: '0.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Folder size={24} color="#EA580C" />
+            <div style={{ background: '#DCFCE7', padding: '0.6rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Folder size={24} color="#16A34A" />
             </div>
             <div>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.1rem', lineHeight: '1.2' }}>खर्च विवरण</h2>
-              <p style={{ fontSize: '0.65rem', fontWeight: 600, color: '#EA580C', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ganesh Samiti - Kharch Sheet 2026</p>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1E293B', marginBottom: '0.1rem', lineHeight: '1.2' }}>चंदा / जमा विवरण</h2>
+              <p style={{ fontSize: '0.65rem', fontWeight: 600, color: '#16A34A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ganesh Samiti - Income Sheet 2026</p>
             </div>
           </div>
         </div>
@@ -75,7 +77,7 @@ export default function ExpenseReportPage() {
         <button 
           onClick={fetchGoogleSheetsData}
           disabled={loading}
-          style={{ background: '#EA580C', color: 'white', border: 'none', padding: '0.5rem 0.75rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', opacity: loading ? 0.7 : 1, transition: 'all 0.2s' }}
+          style={{ background: '#16A34A', color: 'white', border: 'none', padding: '0.5rem 0.75rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer', opacity: loading ? 0.7 : 1, transition: 'all 0.2s' }}
         >
           <RefreshCw size={14} className={loading ? 'spin' : ''} />
           Sync
@@ -97,15 +99,15 @@ export default function ExpenseReportPage() {
             <div style={{ background: '#E0F2FE', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
               <Wallet size={16} color="#0284C7" />
             </div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.2rem' }}>कुल खर्च</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0284C7' }}>{formatINR(totalExpense)}</div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.2rem' }}>कुल राशि</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0284C7' }}>{formatINR(totalAmount)}</div>
           </div>
 
           <div style={{ flex: '1', minWidth: '110px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
             <div style={{ background: '#DCFCE7', width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
               <CreditCard size={16} color="#16A34A" />
             </div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.2rem' }}>भुगतान</div>
+            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.2rem' }}>प्राप्त राशि</div>
             <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#16A34A' }}>{formatINR(totalPaid)}</div>
           </div>
 
@@ -122,47 +124,51 @@ export default function ExpenseReportPage() {
         {/* Data Table Wrapper */}
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '950px' }}>
               <thead>
-                <tr style={{ background: '#EA580C', color: 'white', borderBottom: '1px solid #E2E8F0' }}>
+                <tr style={{ background: '#16A34A', color: 'white', borderBottom: '1px solid #E2E8F0' }}>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '50px', whiteSpace: 'nowrap' }}>क्र.सं.</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '90px', whiteSpace: 'nowrap' }}>दिनांक</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '140px', whiteSpace: 'nowrap' }}>खर्च का नाम</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', minWidth: '200px', whiteSpace: 'nowrap' }}>विवरण</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>माह</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', minWidth: '150px', whiteSpace: 'nowrap' }}>सदस्य का नाम</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>पद</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>जमा श्रेणी</th>
                   <th style={{ padding: '0.75rem 1rem', textAlign: 'left', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>भुगतान माध्यम</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>कुल राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>भुगतान राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>बकाया राशि</th>
-                  <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '100px', whiteSpace: 'nowrap' }}>स्थिति</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>जमा राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'right', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '80px', whiteSpace: 'nowrap' }}>उधारी राशि</th>
+                  <th style={{ padding: '0.75rem 1rem', textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, color: 'white', width: '90px', whiteSpace: 'nowrap' }}>स्थिति</th>
                 </tr>
               </thead>
               <tbody>
                 {loading && data.length === 0 ? (
                   <tr>
-                    <td colSpan="9" style={{ padding: '2rem', textAlign: 'center', color: '#64748B', fontSize: '0.85rem' }}>
-                      <RefreshCw size={24} className="spin" style={{ margin: '0 auto 1rem', color: '#EA580C' }} />
+                    <td colSpan="11" style={{ padding: '2rem', textAlign: 'center', color: '#64748B', fontSize: '0.85rem' }}>
+                      <RefreshCw size={24} className="spin" style={{ margin: '0 auto 1rem', color: '#16A34A' }} />
                       Google Sheets से डेटा सिंक हो रहा है...
                     </td>
                   </tr>
                 ) : data.length === 0 ? (
                   <tr>
-                    <td colSpan="9" style={{ padding: '2rem', textAlign: 'center', color: '#64748B', fontSize: '0.85rem' }}>
-                      अभी कोई खर्च दर्ज नहीं है।
+                    <td colSpan="11" style={{ padding: '2rem', textAlign: 'center', color: '#64748B', fontSize: '0.85rem' }}>
+                      अभी कोई आय/जमा दर्ज नहीं है।
                     </td>
                   </tr>
                 ) : (
                   data.map((item, idx) => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? 'white' : '#FAFAFA' }}>
+                    <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9', background: idx % 2 === 0 ? 'white' : '#FAFAFA' }}>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 700, color: '#1E293B' }}>{item.sNo}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{formatDate(item.date)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>{item.name}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B', lineHeight: '1.4' }}>{item.desc}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.mode}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.total)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.paid)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.due)}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.month}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', whiteSpace: 'nowrap' }}>{item.memberName}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.designation}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B' }}>{item.category}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.paymentMode}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.amount)}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#16A34A', textAlign: 'right' }}>{formatINR(item.paidAmount)}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#EA580C', textAlign: 'right' }}>{formatINR(item.dueAmount)}</td>
                       <td style={{ padding: '0.75rem 1rem', textAlign: 'center' }}>
-                        {item.due > 0 ? (
+                        {item.dueAmount > 0 ? (
                           <span style={{ display: 'inline-flex', padding: '0.2rem 0.5rem', background: '#FEF2F2', color: '#DC2626', borderRadius: '12px', fontSize: '0.65rem', fontWeight: 700 }}>
                             बकाया
                           </span>

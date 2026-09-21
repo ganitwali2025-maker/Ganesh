@@ -9,7 +9,12 @@ export const formatINR = (amount) => {
 };
 
 export const formatDate = (dateStr) => {
-  // Format to friendly DD MMM YYYY if needed
-  if(!dateStr) return "";
+  if (!dateStr) return "";
+  if (typeof dateStr === 'string' && dateStr.includes('T')) {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-GB');
+    }
+  }
   return dateStr;
 };
