@@ -14,6 +14,8 @@ import TransactionPage from './pages/TransactionPage';
 import ReportsPage from './pages/ReportsPage';
 import ExpenseReportPage from './pages/ExpenseReportPage';
 import IncomeReportPage from './pages/IncomeReportPage';
+import MonthlyReportPage from './pages/MonthlyReportPage';
+import MonthlyFoldersPage from './pages/MonthlyFoldersPage';
 
 export default function App() {
   return (
@@ -30,6 +32,8 @@ export default function App() {
             <Route path="/expense" element={<ExpensePage />} />
             <Route path="/expense-report" element={<ExpenseReportPage />} />
             <Route path="/income-report" element={<IncomeReportPage />} />
+            <Route path="/monthly-report" element={<MonthlyFoldersPage />} />
+            <Route path="/monthly-report/:monthName" element={<MonthlyReportPage />} />
             <Route path="/credit" element={<CreditPage />} />
             <Route path="/transaction" element={<TransactionPage />} />
             <Route path="/reports" element={<ReportsPage />} />

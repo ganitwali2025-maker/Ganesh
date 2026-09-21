@@ -1,4 +1,4 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyx40JW4eUQ2rnZyBIQhImNWUype_IYsy8nfLo8xfQx4V400Qnf1-GVmmV_wuyhaQr3cg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3EDWIfWnF67ubzPb-KkL5olpDu3cyBF4k3_0HLaj__Gl7WdOEHOBjFVMpsVNoRZyAyA/exec';
 
 export const fetchGoogleSheetData = async (sheetName) => {
   try {

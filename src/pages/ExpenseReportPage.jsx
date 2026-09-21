@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Folder, RefreshCw, CheckCircle, Wallet, CreditCard, Clock, ExternalLink } from 'lucide-react';
-import { formatINR, formatDate } from '../utils/formatters';
+import { formatINR, formatDate, parseAmount } from '../utils/formatters';
 import { getData, saveData } from '../utils/storage';
 
 export default function ExpenseReportPage() {
@@ -15,7 +15,7 @@ export default function ExpenseReportPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzgYUk1T-EmyCqND522vusf9vWoLRQktd6dya7IK7y33rN8t5nBvQJzjRcTWfo5y16v/exec?type=expense');
       const result = await response.json();
       
       if (result.status === 'success') {
@@ -50,9 +50,9 @@ export default function ExpenseReportPage() {
   }, []);
 
   // Calculate totals
-  const totalExpense = data.reduce((acc, curr) => acc + (curr.total || 0), 0);
-  const totalPaid = data.reduce((acc, curr) => acc + (curr.paid || 0), 0);
-  const totalDue = data.reduce((acc, curr) => acc + (curr.due || 0), 0);
+  const totalExpense = data.reduce((acc, curr) => acc + parseAmount(curr.total), 0);
+  const totalPaid = data.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
+  const totalDue = data.reduce((acc, curr) => acc + parseAmount(curr.due), 0);
 
   return (
     <div className="report-page-container" style={{ margin: '-1.25rem', background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>

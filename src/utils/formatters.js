@@ -1,11 +1,19 @@
 
+export const parseAmount = (val) => {
+  if (typeof val === 'number') return val;
+  if (!val) return 0;
+  const num = parseFloat(String(val).replace(/[^0-9.-]+/g, ""));
+  return isNaN(num) ? 0 : num;
+};
+
 export const formatINR = (amount) => {
-  if (isNaN(amount)) return "₹0";
+  const parsed = parseAmount(amount);
+  if (isNaN(parsed)) return "₹0";
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(parsed);
 };
 
 export const formatDate = (dateStr) => {

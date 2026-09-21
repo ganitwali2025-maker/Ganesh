@@ -51,8 +51,8 @@ export default function IncomePage() {
     };
 
     try {
-      // Using the same API endpoint used in ExpensePage
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec', {
+      // Using the specific API endpoint for Income
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',

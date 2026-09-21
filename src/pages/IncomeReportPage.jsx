@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Folder, RefreshCw, CheckCircle, Wallet, CreditCard, Clock, ExternalLink } from 'lucide-react';
-import { formatINR, formatDate } from '../utils/formatters';
+import { formatINR, formatDate, parseAmount } from '../utils/formatters';
 import { getData, saveData } from '../utils/storage';
 
 export default function IncomeReportPage() {
@@ -17,7 +17,7 @@ export default function IncomeReportPage() {
     setError(null);
     try {
       // ?type=income pass karenge jisse Google Apps Script sirft Income ka data bheje
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec?type=income');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec?type=income');
       const result = await response.json();
       
       if (result.status === 'success') {
@@ -52,9 +52,9 @@ export default function IncomeReportPage() {
   }, []);
 
   // Calculate totals
-  const totalAmount = data.reduce((acc, curr) => acc + (curr.amount || 0), 0);
-  const totalPaid = data.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0);
-  const totalDue = data.reduce((acc, curr) => acc + (curr.dueAmount || 0), 0);
+  const totalAmount = data.reduce((acc, curr) => acc + parseAmount(curr.amount), 0);
+  const totalPaid = data.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
+  const totalDue = data.reduce((acc, curr) => acc + (parseAmount(curr.amount) - parseAmount(curr.paid)), 0);
 
   return (
     <div className="report-page-container" style={{ margin: '-1.25rem', background: '#F8FAFC', minHeight: '100vh', paddingBottom: '6rem' }}>
@@ -167,10 +167,10 @@ export default function IncomeReportPage() {
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#64748B' }}>{item.category}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', color: '#475569' }}>{item.paymentMode}</td>
                       <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{formatINR(item.amount)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#16A34A', textAlign: 'right' }}>{formatINR(item.paidAmount)}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#EA580C', textAlign: 'right' }}>{formatINR(item.dueAmount)}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#16A34A', textAlign: 'right' }}>{formatINR(item.paid)}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontSize: '0.75rem', fontWeight: 600, color: '#EA580C', textAlign: 'right' }}>{formatINR(parseAmount(item.amount) - parseAmount(item.paid))}</td>
                       <td style={{ padding: '0.75rem 1rem', textAlign: 'center' }}>
-                        {item.dueAmount > 0 ? (
+                        {(parseAmount(item.amount) - parseAmount(item.paid)) > 0 ? (
                           <span style={{ display: 'inline-flex', padding: '0.2rem 0.5rem', background: '#FEF2F2', color: '#DC2626', borderRadius: '12px', fontSize: '0.65rem', fontWeight: 700 }}>
                             बकाया
                           </span>

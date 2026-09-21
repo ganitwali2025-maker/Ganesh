@@ -4,7 +4,7 @@ import { Wallet, ArrowUp, ArrowDown, ChevronRight, Sun, Users, Download, Upload,
 import TransactionItem from '../components/ui/TransactionItem';
 import { getData, saveData } from '../utils/storage';
 import { calculateBalance, calculateTotalIncome, calculateTotalChanda, calculateTotalExpense, calculateTotalCredit } from '../utils/calculations';
-import { formatINR } from '../utils/formatters';
+import { formatINR, parseAmount } from '../utils/formatters';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -16,23 +16,23 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [resIncome, resExpense] = await Promise.all([
-          fetch('https://script.google.com/macros/s/AKfycbxVMu77qQB9rtYyNnWiMUdlCdUNOCHxQntc6u321oWF_CgZnI521W68isq_m64RBYVLvg/exec?type=income'),
-          fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec')
+        const [incomeRes, expenseRes] = await Promise.all([
+          fetch('https://script.google.com/macros/s/AKfycbyJSm83aMPfuoen5bbQlMZnHK15YejnTOsjAd1GVMBpz3H5VvZgymim-oohorGU38vqnA/exec?type=income'),
+          fetch('https://script.google.com/macros/s/AKfycbzgYUk1T-EmyCqND522vusf9vWoLRQktd6dya7IK7y33rN8t5nBvQJzjRcTWfo5y16v/exec?type=expense')
         ]);
         
-        const jsonIncome = await resIncome.json();
-        const jsonExpense = await resExpense.json();
+        const jsonIncome = await incomeRes.json();
+        const jsonExpense = await expenseRes.json();
         
         let totalJama = 0;
         let totalExp = 0;
 
         if (jsonIncome.status === 'success' && jsonIncome.data) {
-          totalJama = jsonIncome.data.reduce((acc, curr) => acc + (parseFloat(curr.paidAmount) || 0), 0);
+          totalJama = jsonIncome.data.reduce((acc, curr) => acc + parseAmount(curr.paid), 0);
         }
 
         if (jsonExpense.status === 'success' && jsonExpense.data) {
-          totalExp = jsonExpense.data.reduce((acc, curr) => acc + (parseFloat(curr.total) || 0), 0);
+          totalExp = jsonExpense.data.reduce((acc, curr) => acc + parseAmount(curr.total), 0);
         }
 
         setTotals({
@@ -180,7 +180,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="report-card theme-purple" onClick={() => navigate('/reports', { state: { category: 'monthly' } })}>
+          <div className="report-card theme-purple" onClick={() => navigate('/monthly-report')}>
             <div className="report-card-top">
               <div className="r-icon"><Folder size={22} className="r-icon-svg" /></div>
               <div className="r-arrow"><ChevronRight size={16} className="r-arrow-svg" /></div>

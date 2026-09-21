@@ -48,8 +48,8 @@ export default function ExpensePage() {
     };
 
     try {
-      // Using the correct Expense API endpoint
-      const response = await fetch('https://script.google.com/macros/s/AKfycbzYLgttsJvvYUwr1of8YWs7RJHxW1cN5Ill-K3o9BU_oyQgT7THOaRmNh56lJ00Zg4j8A/exec', {
+      // Using the separate API endpoint for Expenses
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzgYUk1T-EmyCqND522vusf9vWoLRQktd6dya7IK7y33rN8t5nBvQJzjRcTWfo5y16v/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
